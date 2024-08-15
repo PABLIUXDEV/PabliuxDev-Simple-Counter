@@ -6,8 +6,52 @@ import ReactDOM from "react-dom/client";
 import "../styles/index.css";
 
 //import your own components
-import Home from "./component/home.jsx";
+import SecondsCounter from "./component/SecondsCounter.jsx";
 
-//render your react application
-ReactDOM.createRoot(document.getElementById('app')).render(<Home/>);
+let intervalID = null;
 
+let counter = 0
+
+
+function updateCounter() {
+    counter++
+    root.render(<MainComponent/>);
+}
+
+const MainComponent = () => {
+    
+    return <>
+    <SecondsCounter seconds={counter}/>
+    <label>Starting value</label>
+        <input type="number" onChange={(event) =>{
+            counter = event.target.value
+            root.render(<MainComponent/>)
+        }} />
+    <div className="p-2 d-flex gap-2">
+        <button onClick={()=>{
+            intervalID = setInterval(updateCounter, 1000);
+            root.render(<MainComponent/>)
+        }} className="btn btn-success">Start</button>
+        
+        <button onClick={()=>{
+            clearInterval(intervalID)
+            intervalID = null;
+            root.render(<MainComponent/>)
+        }}className="btn btn-danger">Stop</button>
+
+<button onClick={()=>{
+        if(intervalID){
+            clearInterval(intervalID);
+            counter = 0;
+            root.render(<MainComponent/>)
+        }
+        }}className="btn btn-warning">Reset</button>
+    </div>
+    </>
+}
+
+let root = ReactDOM.createRoot(document.getElementById('app'));
+
+
+
+root.render(<MainComponent/>);
